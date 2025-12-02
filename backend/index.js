@@ -104,26 +104,22 @@ const fetchUser = async (req, res, next) => {
 
 // Add Product
 app.post("/addproduct", async (req, res) => {
-  let products=await Product.find({})
-  let id = 1;
-
-    if (products.length > 0) {
-      let last_product = products[products.length - 1];
-      id = last_product.id ? last_product.id + 1 : 1;
-    }
-
   try {
+    // Find the max id currently in collection
+    const lastProduct = await Product.findOne().sort({ id: -1 });
+    const id = lastProduct ? lastProduct.id + 1 : 1;
+
     const product = new Product({
-      id:id,
+      id: id,
       name: req.body.name,
-      image: req.body.image,   // Use image URL from frontend
+      image: req.body.image,
       category: req.body.category,
       new_price: req.body.new_price,
       old_price: req.body.old_price,
     });
 
     await product.save();
-    res.json({ success: true ,name:req.body.name});
+    res.json({ success: true, name: req.body.name, id: id });
   } catch (err) {
     res.json({ success: false, error: err.message });
   }
@@ -143,14 +139,12 @@ app.post("/addtocart", fetchUser, async (req, res) => {
   await Users.findOneAndUpdate({ email: req.user }, { cartData: user.cartData });
   res.json({ success: true });
 });
-
-// Remove from Cart
 // Remove Product
-// Remove Product
-app.post("/removeproduct", async (req, res) => {
+app.post("/removeproduct", fetchUser,async (req, res) => {
   try {
-    const { id } = req.body; // get product id from frontend
-    await Product.deleteOne({ id: id }); // remove product from MongoDB
+    const { id } = req.body; 
+    const user=await Product.deleteOne({ id: id }); 
+    // user.cartData[req.body.itemId] -= 1;
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
