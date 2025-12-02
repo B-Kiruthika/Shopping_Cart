@@ -4,6 +4,10 @@ import hero_image from "../Assets/hero_image.png";
 import "./Sample.css";
 
 const Sample = () => {
+   const scrollToNewCollections = () => {
+    const section = document.getElementById("new-collections");
+    section?.scrollIntoView({ behavior: "smooth" });
+  };
   return (
     <div className="hero">
       <div className="hero-left">
@@ -15,7 +19,7 @@ const Sample = () => {
           <p>collections</p>
           <p>for everyone</p>
         </div>
-        <div className="hero-latest-btn">
+        <div onClick={scrollToNewCollections} className="hero-latest-btn">
           <div>Latest Collection</div>
           <img src={arrow_icon} alt="" />
         </div>
