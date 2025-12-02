@@ -5,41 +5,31 @@ const LoginSignup = () => {
   const [state, setState] = useState("Login");
   const [formData, setFormData] = useState({ username: "", email: "", password: "" });
 
-  const changeHandler = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const changeHandler = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const login = async () => {
     try {
       const response = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email.trim(), password: formData.password }),
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          password: formData.password,
+        }),
       });
+
       const data = await response.json();
+
       if (data.success) {
         localStorage.setItem("auth-token", data.token);
-        window.location.replace("/");
-      } else alert(data.errors);
+        window.location.replace("/"); 
+      } else {
+        alert(data.errors);
+      }
     } catch (err) {
       console.error(err);
       alert("Login failed. Please try again.");
-    }
-  };
-
-  const signup = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      if (data.success) {
-        localStorage.setItem("auth-token", data.token);
-        window.location.replace("/");
-      } else alert(data.errors);
-    } catch (err) {
-      console.error(err);
-      alert("Signup failed. Please try again.");
     }
   };
 
@@ -74,15 +64,19 @@ const LoginSignup = () => {
           />
         </div>
 
-        <button onClick={() => (state === "Login" ? login() : signup())}>Continue</button>
+        <button onClick={() => (state === "Login" ? login() : signup())}>
+          Continue
+        </button>
 
         {state === "Sign Up" ? (
           <p className="loginsignup-login">
-            Already have an account? <span onClick={() => setState("Login")}>Login here</span>
+            Already have an account?{" "}
+            <span onClick={() => setState("Login")}>Login here</span>
           </p>
         ) : (
           <p className="loginsignup-login">
-            Create an account? <span onClick={() => setState("Sign Up")}>Click here</span>
+            Create an account?{" "}
+            <span onClick={() => setState("Sign Up")}>Click here</span>
           </p>
         )}
       </div>
