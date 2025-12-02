@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "react": "^19.2.0",
-<<<<<<< HEAD
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.9.6"
 =======
